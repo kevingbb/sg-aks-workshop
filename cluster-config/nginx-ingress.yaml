@@ -215,7 +215,7 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     service.beta.kubernetes.io/azure-load-balancer-internal: "true"
-    service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "contosofinsvcsubnet"
+    service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "khakssvcsubnet"
   labels:
     app: nginx-ingress
     chart: nginx-ingress-1.29.5
