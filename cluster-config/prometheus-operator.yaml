@@ -38819,8 +38819,8 @@ metadata:
     heritage: "Helm"
 spec:
   endpoints:
-  - port: http-metrics
-    scheme: http
+  - port: https-metrics
+    scheme: https
     tlsConfig:
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
       insecureSkipVerify: true
@@ -38830,8 +38830,8 @@ spec:
     - sourceLabels:
       - __metrics_path__
       targetLabel: metrics_path
-  - port: http-metrics
-    scheme: http
+  - port: https-metrics
+    scheme: https
     path: /metrics/cadvisor
     honorLabels: true
     tlsConfig:
