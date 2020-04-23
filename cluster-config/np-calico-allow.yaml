@@ -36,7 +36,7 @@ spec:
   - action: Allow
     destination:
       nets:
-        - 100.64.0.0/24
+        - 100.64.1.0/24
       ports:
         - 2579
     source:
@@ -92,7 +92,7 @@ spec:
       namespaceSelector: gatekeeper.sh/system == 'yes'
     source:
       nets:
-        - 100.64.0.0/24
+        - 100.64.1.0/24
   egress:
   - action: Allow
     destination: {}
@@ -117,7 +117,7 @@ spec:
       namespaceSelector: app == 'ingress'
     source: 
       nets:
-        - 100.64.0.0/24
+        - 100.64.1.0/24
       ports:
         - 80
   egress:
@@ -150,7 +150,7 @@ spec:
       namespaceSelector: linkerd.io/is-control-plane == 'true'
     source:
       nets:
-        - 100.64.0.0/24
+        - 100.64.1.0/24
   egress:
   - action: Allow
     destination: {}
