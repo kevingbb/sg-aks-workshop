@@ -1,143 +1,143 @@
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: allow-dev
-  namespace: dev
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-  - Egress
-  ingress:
-    - from:
-      - podSelector: {}
-      - namespaceSelector:
-          matchLabels:
-            linkerd.io/is-control-plane: "true"
-      - namespaceSelector:
-          matchLabels:
-            app: ingress
-  egress:
-    - to:
-      - podSelector: {}
-      - namespaceSelector:
-          matchLabels:
-            linkerd.io/is-control-plane: "true"
-    - to:
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/cluster-service: "true"
-        podSelector:
-          matchLabels:
-            k8s-app: kube-dns
-      ports:
-      - port: 53
-        protocol: UDP
-      - port: 53
-        protocol: TCP
-    - ports:
-      - port: 445
-        protocol: TCP
-    - to:
-      - ipBlock:
-          cidr: 0.0.0.0/0
----
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: allow-ingress
-  namespace: ingress
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-  - Egress
-  ingress:
-    - from: []
-      ports:
-      - port: 80
-        protocol: TCP
-    - from:
-      - namespaceSelector:
-          matchLabels:
-            linkerd.io/is-control-plane: "true"
-      - podSelector: {}
-  egress:
-    - to:
-      - podSelector: {}
-      - namespaceSelector:
-          matchLabels:
-            linkerd.io/is-control-plane: "true"
-      - namespaceSelector:
-          matchLabels:
-            app: dev
-      - namespaceSelector:
-          matchLabels:
-            app: staging
-    - to:
-      - ipBlock:
-          cidr: 0.0.0.0/0
-      ports:
-      - port: 443
-    - to:
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/cluster-service: "true"
-        podSelector:
-          matchLabels:
-            k8s-app: kube-dns
-      ports:
-      - port: 53
-        protocol: UDP
-      - port: 53
-        protocol: TCP
----
-kind: NetworkPolicy 
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: allow-linkerd
-  namespace: linkerd
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-  - Egress
-  ingress:
-    - from:
-      - namespaceSelector: {}
-        podSelector:
-          matchLabels:
-            linkerd.io/control-plane-ns: linkerd
-      - podSelector: {}
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/cluster-service: "true"
-  egress:
-    - to:
-      - podSelector: {}
-      - namespaceSelector:
-          matchLabels:
-            app: dev
-      - namespaceSelector:
-          matchLabels:
-            app: staging
-      - namespaceSelector:
-          matchLabels:
-            app: ingress
-    - to:
-      - namespaceSelector:
-          matchLabels:
-            kubernetes.io/cluster-service: "true"
-        podSelector:
-          matchLabels:
-            k8s-app: kube-dns
-      ports:
-      - port: 53
-        protocol: UDP
-      - port: 53
-        protocol: TCP
-    - to:
-      - ipBlock:
-          cidr: 0.0.0.0/0
-      ports:
-      - port: 443
+# kind: NetworkPolicy
+# apiVersion: networking.k8s.io/v1
+# metadata:
+#   name: allow-dev
+#   namespace: dev
+# spec:
+#   podSelector: {}
+#   policyTypes:
+#   - Ingress
+#   - Egress
+#   ingress:
+#     - from:
+#       - podSelector: {}
+#       - namespaceSelector:
+#           matchLabels:
+#             linkerd.io/is-control-plane: "true"
+#       - namespaceSelector:
+#           matchLabels:
+#             app: ingress
+#   egress:
+#     - to:
+#       - podSelector: {}
+#       - namespaceSelector:
+#           matchLabels:
+#             linkerd.io/is-control-plane: "true"
+#     - to:
+#       - namespaceSelector:
+#           matchLabels:
+#             kubernetes.io/cluster-service: "true"
+#         podSelector:
+#           matchLabels:
+#             k8s-app: kube-dns
+#       ports:
+#       - port: 53
+#         protocol: UDP
+#       - port: 53
+#         protocol: TCP
+#     - ports:
+#       - port: 445
+#         protocol: TCP
+#     - to:
+#       - ipBlock:
+#           cidr: 0.0.0.0/0
+# ---
+# kind: NetworkPolicy
+# apiVersion: networking.k8s.io/v1
+# metadata:
+#   name: allow-ingress
+#   namespace: ingress
+# spec:
+#   podSelector: {}
+#   policyTypes:
+#   - Ingress
+#   - Egress
+#   ingress:
+#     - from: []
+#       ports:
+#       - port: 80
+#         protocol: TCP
+#     - from:
+#       - namespaceSelector:
+#           matchLabels:
+#             linkerd.io/is-control-plane: "true"
+#       - podSelector: {}
+#   egress:
+#     - to:
+#       - podSelector: {}
+#       - namespaceSelector:
+#           matchLabels:
+#             linkerd.io/is-control-plane: "true"
+#       - namespaceSelector:
+#           matchLabels:
+#             app: dev
+#       - namespaceSelector:
+#           matchLabels:
+#             app: staging
+#     - to:
+#       - ipBlock:
+#           cidr: 0.0.0.0/0
+#       ports:
+#       - port: 443
+#     - to:
+#       - namespaceSelector:
+#           matchLabels:
+#             kubernetes.io/cluster-service: "true"
+#         podSelector:
+#           matchLabels:
+#             k8s-app: kube-dns
+#       ports:
+#       - port: 53
+#         protocol: UDP
+#       - port: 53
+#         protocol: TCP
+# ---
+# kind: NetworkPolicy 
+# apiVersion: networking.k8s.io/v1
+# metadata:
+#   name: allow-linkerd
+#   namespace: linkerd
+# spec:
+#   podSelector: {}
+#   policyTypes:
+#   - Ingress
+#   - Egress
+#   ingress:
+#     - from:
+#       - namespaceSelector: {}
+#         podSelector:
+#           matchLabels:
+#             linkerd.io/control-plane-ns: linkerd
+#       - podSelector: {}
+#       - namespaceSelector:
+#           matchLabels:
+#             kubernetes.io/cluster-service: "true"
+#   egress:
+#     - to:
+#       - podSelector: {}
+#       - namespaceSelector:
+#           matchLabels:
+#             app: dev
+#       - namespaceSelector:
+#           matchLabels:
+#             app: staging
+#       - namespaceSelector:
+#           matchLabels:
+#             app: ingress
+#     - to:
+#       - namespaceSelector:
+#           matchLabels:
+#             kubernetes.io/cluster-service: "true"
+#         podSelector:
+#           matchLabels:
+#             k8s-app: kube-dns
+#       ports:
+#       - port: 53
+#         protocol: UDP
+#       - port: 53
+#         protocol: TCP
+#     - to:
+#       - ipBlock:
+#           cidr: 0.0.0.0/0
+#       ports:
+#       - port: 443

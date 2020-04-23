@@ -1,0 +1,31 @@
+apiVersion: crd.projectcalico.org/v1
+kind: GlobalNetworkPolicy
+metadata:
+  name: global-deny-all
+spec:
+  order: 4000
+  types:
+  - Ingress
+  - Egress
+  # ingress network rules
+  ingress:
+  # Allow all ingress traffic for the kube-system namespace.
+  - action: Allow
+    destination:
+      namespaceSelector: name == 'kube-system'
+    source: {}
+  # egress network rules
+  egress:
+  # Allow all egress traffic from kube-system.
+  - action: Allow
+    destination: {}
+    source:
+      namespaceSelector: name == 'kube-system'
+  # Allow egress DNS traffic to any destination.
+  - action: Allow
+    protocol: UDP,TCP
+    destination:
+      # nets:
+      #   - 0.0.0.0/0
+      namespaceSelector: kubernetes.io/cluster-service == "true"
+      selector: k8s-app == "kube-dns"
