@@ -7,8 +7,22 @@ spec:
   selector: all()
   order: 2000
   types:
+  - Ingress
   - Egress
+  ingress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: app == 'aadpodidentity'
+    source:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
   egress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
+    source:
+      namespaceSelector: app == 'aadpodidentity'
   - action: Allow
     destination: {}
     source:
@@ -32,7 +46,19 @@ spec:
       namespaceSelector: app == 'dev'
     source:
       namespaceSelector: app == 'ingress'
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: app == 'dev'
+    source:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
   egress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
+    source:
+      namespaceSelector: app == 'dev'
   - action: Allow
     destination:
       nets:
@@ -51,8 +77,22 @@ spec:
   selector: all()
   order: 2000
   types:
+  - Ingress
   - Egress
+  ingress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: app == 'falco'
+    source:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
   egress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
+    source:
+      namespaceSelector: app == 'falco'
   - action: Allow
     destination: {}
     source:
@@ -67,8 +107,22 @@ spec:
   selector: all()
   order: 2000
   types:
+  - Ingress
   - Egress
+  ingress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: app == 'flux'
+    source:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
   egress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
+    source:
+      namespaceSelector: app == 'flux'
   - action: Allow
     destination: {}
     source:
@@ -91,9 +145,21 @@ spec:
     destination:
       namespaceSelector: gatekeeper.sh/system == 'yes'
     source:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: gatekeeper.sh/system == 'yes'
+    source:
       nets:
         - 100.64.1.0/24
   egress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
+    source:
+      namespaceSelector: gatekeeper.sh/system == 'yes'
   - action: Allow
     destination: {}
     source:
@@ -114,13 +180,23 @@ spec:
   - action: Allow
     protocol: TCP
     destination:
+      namespaceSelector: app == 'dev'
+    source:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
+  - action: Allow
+    protocol: TCP
+    destination:
       namespaceSelector: app == 'ingress'
     source: 
       nets:
         - 100.64.1.0/24
-      ports:
-        - 80
   egress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
+    source:
+      namespaceSelector: app == 'dev'
   - action: Allow
     destination: {}
     source:
@@ -143,14 +219,8 @@ spec:
     destination:
       namespaceSelector: linkerd.io/is-control-plane == 'true'
     source:
+      namespaceSelector: {}
       selector: linkerd.io/control-plane-ns == 'linkerd'
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-    source:
-      nets:
-        - 100.64.1.0/24
   egress:
   - action: Allow
     destination: {}
@@ -166,8 +236,22 @@ spec:
   selector: all()
   order: 2000
   types:
+  - Ingress
   - Egress
+  ingress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: app == 'monitoring'
+    source:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'  
   egress:
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
+    source:
+      namespaceSelector: app == 'monitoring'
   - action: Allow
     destination: {}
     source:

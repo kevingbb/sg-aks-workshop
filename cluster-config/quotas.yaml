@@ -5,10 +5,10 @@ metadata:
   namespace: dev
 spec:
   hard:
-    requests.cpu: "4"
-    requests.memory: 4Gi
-    limits.cpu: "4"
-    limits.memory: 4Gi
+    requests.cpu: "5"
+    requests.memory: 5Gi
+    limits.cpu: "5"
+    limits.memory: 5Gi
     persistentvolumeclaims: "5"
     requests.storage: "10Gi"
 ---

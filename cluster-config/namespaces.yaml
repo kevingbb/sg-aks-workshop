@@ -4,6 +4,8 @@ metadata:
   name: aadpodidentity
   labels:
     app: aadpodidentity
+  annotations:
+    linkerd.io/inject: enabled
 ---
 apiVersion: v1
 kind: Namespace
@@ -20,6 +22,8 @@ metadata:
   name: dummy-ns
   labels:
     app: dummy-ns
+  annotations:
+    linkerd.io/inject: enabled
 ---
 apiVersion: v1
 kind: Namespace
@@ -27,6 +31,8 @@ metadata:
   name: falco
   labels:
     app: falco
+  annotations:
+    linkerd.io/inject: enabled
 ---
 apiVersion: v1
 kind: Namespace
@@ -34,6 +40,8 @@ metadata:
   name: flux
   labels:
     app: flux
+  annotations:
+    linkerd.io/inject: enabled
 ---
 apiVersion: v1
 kind: Namespace
@@ -50,6 +58,8 @@ metadata:
   name: monitoring
   labels:
     app: monitoring
+  annotations:
+    linkerd.io/inject: enabled
 ---
 apiVersion: v1
 kind: Namespace
