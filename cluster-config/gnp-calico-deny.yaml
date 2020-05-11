@@ -12,7 +12,7 @@ spec:
   # Allow all ingress traffic for the kube-system namespace.
   - action: Allow
     destination:
-      namespaceSelector: name == 'kube-system'
+      namespaceSelector: kubernetes.io/cluster-service == "true"
     source: {}
   # egress network rules
   egress:
@@ -20,7 +20,7 @@ spec:
   - action: Allow
     destination: {}
     source:
-      namespaceSelector: name == 'kube-system'
+      namespaceSelector: kubernetes.io/cluster-service == "true"
   # Allow egress DNS traffic to any destination.
   - action: Allow
     protocol: UDP,TCP
