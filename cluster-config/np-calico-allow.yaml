@@ -180,7 +180,7 @@ spec:
   - action: Allow
     protocol: TCP
     destination:
-      namespaceSelector: app == 'dev'
+      namespaceSelector: app == 'ingress'
     source:
       namespaceSelector: linkerd.io/is-control-plane == 'true'
   - action: Allow
@@ -221,6 +221,12 @@ spec:
     source:
       namespaceSelector: {}
       selector: linkerd.io/control-plane-ns == 'linkerd'
+  - action: Allow
+    protocol: TCP
+    destination:
+      namespaceSelector: linkerd.io/is-control-plane == 'true'
+    source:
+      namespaceSelector: {}
   egress:
   - action: Allow
     destination: {}

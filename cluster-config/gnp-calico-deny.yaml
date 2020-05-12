@@ -3,6 +3,7 @@ kind: GlobalNetworkPolicy
 metadata:
   name: global-deny-all
 spec:
+  selector: all()
   order: 4000
   types:
   - Ingress
@@ -12,7 +13,7 @@ spec:
   # Allow all ingress traffic for the kube-system namespace.
   - action: Allow
     destination:
-      namespaceSelector: kubernetes.io/cluster-service == "true"
+      namespaceSelector: kubernetes.io/cluster-service == 'true'
     source: {}
   # egress network rules
   egress:
@@ -20,12 +21,12 @@ spec:
   - action: Allow
     destination: {}
     source:
-      namespaceSelector: kubernetes.io/cluster-service == "true"
+      namespaceSelector: kubernetes.io/cluster-service == 'true'
   # Allow egress DNS traffic to any destination.
   - action: Allow
     protocol: UDP,TCP
     destination:
       # nets:
       #   - 0.0.0.0/0
-      namespaceSelector: kubernetes.io/cluster-service == "true"
+      namespaceSelector: kubernetes.io/cluster-service == 'true'
       selector: k8s-app == "kube-dns"
