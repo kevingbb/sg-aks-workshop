@@ -1,264 +1,264 @@
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: np-allow-aadpodidentity
-  namespace: aadpodidentity
-spec:
-  selector: all()
-  order: 2000
-  types:
-  - Ingress
-  - Egress
-  ingress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: app == 'aadpodidentity'
-    source:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-  egress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-    source:
-      namespaceSelector: app == 'aadpodidentity'
-  - action: Allow
-    destination: {}
-    source:
-      namespaceSelector: app == 'aadpodidentity'
----
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: np-allow-dev
-  namespace: dev
-spec:
-  selector: all()
-  order: 2000
-  types:
-  - Ingress
-  - Egress
-  ingress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: app == 'dev'
-    source:
-      namespaceSelector: app == 'ingress'
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: app == 'dev'
-    source:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-  egress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-    source:
-      namespaceSelector: app == 'dev'
-  - action: Allow
-    destination:
-      nets:
-        - 100.64.1.0/24
-      ports:
-        - 2579
-    source:
-      namespaceSelector: app == 'dev'
----
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: np-allow-falco
-  namespace: falco
-spec:
-  selector: all()
-  order: 2000
-  types:
-  - Ingress
-  - Egress
-  ingress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: app == 'falco'
-    source:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-  egress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-    source:
-      namespaceSelector: app == 'falco'
-  - action: Allow
-    destination: {}
-    source:
-      namespaceSelector: app == 'falco'
----
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: np-allow-flux
-  namespace: flux
-spec:
-  selector: all()
-  order: 2000
-  types:
-  - Ingress
-  - Egress
-  ingress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: app == 'flux'
-    source:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-  egress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-    source:
-      namespaceSelector: app == 'flux'
-  - action: Allow
-    destination: {}
-    source:
-      namespaceSelector: app == 'flux'
----
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: np-allow-gatekeeper-system
-  namespace: gatekeeper-system
-spec:
-  selector: all()
-  order: 2000
-  types:
-  - Ingress
-  - Egress
-  ingress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: gatekeeper.sh/system == 'yes'
-    source:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: gatekeeper.sh/system == 'yes'
-    source:
-      nets:
-        - 100.64.1.0/24
-  egress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-    source:
-      namespaceSelector: gatekeeper.sh/system == 'yes'
-  - action: Allow
-    destination: {}
-    source:
-      namespaceSelector: gatekeeper.sh/system == 'yes'
----
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: np-allow-ingress
-  namespace: ingress
-spec:
-  selector: all()
-  order: 2000
-  types:
-  - Ingress
-  - Egress
-  ingress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: app == 'ingress'
-    source:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: app == 'ingress'
-    source: 
-      nets:
-        - 100.64.1.0/24
-  egress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-    source:
-      namespaceSelector: app == 'dev'
-  - action: Allow
-    destination: {}
-    source:
-      namespaceSelector: app == 'ingress'
----
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: np-allow-linkerd
-  namespace: linkerd
-spec:
-  selector: all()
-  order: 2000
-  types:
-  - Ingress
-  - Egress
-  ingress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-    source:
-      namespaceSelector: {}
-      selector: linkerd.io/control-plane-ns == 'linkerd'
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-    source:
-      namespaceSelector: {}
-  egress:
-  - action: Allow
-    destination: {}
-    source:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
----
-apiVersion: crd.projectcalico.org/v1
-kind: NetworkPolicy
-metadata:
-  name: np-allow-monitoring
-  namespace: monitoring
-spec:
-  selector: all()
-  order: 2000
-  types:
-  - Ingress
-  - Egress
-  ingress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: app == 'monitoring'
-    source:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'  
-  egress:
-  - action: Allow
-    protocol: TCP
-    destination:
-      namespaceSelector: linkerd.io/is-control-plane == 'true'
-    source:
-      namespaceSelector: app == 'monitoring'
-  - action: Allow
-    destination: {}
-    source:
-      namespaceSelector: app == 'monitoring'
+# apiVersion: crd.projectcalico.org/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: np-allow-aadpodidentity
+#   namespace: aadpodidentity
+# spec:
+#   selector: all()
+#   order: 2000
+#   types:
+#   - Ingress
+#   - Egress
+#   ingress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: app == 'aadpodidentity'
+#     source:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#   egress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#     source:
+#       namespaceSelector: app == 'aadpodidentity'
+#   - action: Allow
+#     destination: {}
+#     source:
+#       namespaceSelector: app == 'aadpodidentity'
+# ---
+# apiVersion: crd.projectcalico.org/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: np-allow-dev
+#   namespace: dev
+# spec:
+#   selector: all()
+#   order: 2000
+#   types:
+#   - Ingress
+#   - Egress
+#   ingress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: app == 'dev'
+#     source:
+#       namespaceSelector: app == 'ingress'
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: app == 'dev'
+#     source:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#   egress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#     source:
+#       namespaceSelector: app == 'dev'
+#   - action: Allow
+#     destination:
+#       nets:
+#         - 100.64.1.0/24
+#       ports:
+#         - 2579
+#     source:
+#       namespaceSelector: app == 'dev'
+# ---
+# apiVersion: crd.projectcalico.org/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: np-allow-falco
+#   namespace: falco
+# spec:
+#   selector: all()
+#   order: 2000
+#   types:
+#   - Ingress
+#   - Egress
+#   ingress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: app == 'falco'
+#     source:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#   egress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#     source:
+#       namespaceSelector: app == 'falco'
+#   - action: Allow
+#     destination: {}
+#     source:
+#       namespaceSelector: app == 'falco'
+# ---
+# apiVersion: crd.projectcalico.org/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: np-allow-flux
+#   namespace: flux
+# spec:
+#   selector: all()
+#   order: 2000
+#   types:
+#   - Ingress
+#   - Egress
+#   ingress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: app == 'flux'
+#     source:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#   egress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#     source:
+#       namespaceSelector: app == 'flux'
+#   - action: Allow
+#     destination: {}
+#     source:
+#       namespaceSelector: app == 'flux'
+# ---
+# apiVersion: crd.projectcalico.org/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: np-allow-gatekeeper-system
+#   namespace: gatekeeper-system
+# spec:
+#   selector: all()
+#   order: 2000
+#   types:
+#   - Ingress
+#   - Egress
+#   ingress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: gatekeeper.sh/system == 'yes'
+#     source:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: gatekeeper.sh/system == 'yes'
+#     source:
+#       nets:
+#         - 100.64.1.0/24
+#   egress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#     source:
+#       namespaceSelector: gatekeeper.sh/system == 'yes'
+#   - action: Allow
+#     destination: {}
+#     source:
+#       namespaceSelector: gatekeeper.sh/system == 'yes'
+# ---
+# apiVersion: crd.projectcalico.org/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: np-allow-ingress
+#   namespace: ingress
+# spec:
+#   selector: all()
+#   order: 2000
+#   types:
+#   - Ingress
+#   - Egress
+#   ingress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: app == 'ingress'
+#     source:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: app == 'ingress'
+#     source: 
+#       nets:
+#         - 100.64.1.0/24
+#   egress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#     source:
+#       namespaceSelector: app == 'dev'
+#   - action: Allow
+#     destination: {}
+#     source:
+#       namespaceSelector: app == 'ingress'
+# ---
+# apiVersion: crd.projectcalico.org/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: np-allow-linkerd
+#   namespace: linkerd
+# spec:
+#   selector: all()
+#   order: 2000
+#   types:
+#   - Ingress
+#   - Egress
+#   ingress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#     source:
+#       namespaceSelector: {}
+#       selector: linkerd.io/control-plane-ns == 'linkerd'
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#     source:
+#       namespaceSelector: {}
+#   egress:
+#   - action: Allow
+#     destination: {}
+#     source:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+# ---
+# apiVersion: crd.projectcalico.org/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: np-allow-monitoring
+#   namespace: monitoring
+# spec:
+#   selector: all()
+#   order: 2000
+#   types:
+#   - Ingress
+#   - Egress
+#   ingress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: app == 'monitoring'
+#     source:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'  
+#   egress:
+#   - action: Allow
+#     protocol: TCP
+#     destination:
+#       namespaceSelector: linkerd.io/is-control-plane == 'true'
+#     source:
+#       namespaceSelector: app == 'monitoring'
+#   - action: Allow
+#     destination: {}
+#     source:
+#       namespaceSelector: app == 'monitoring'
