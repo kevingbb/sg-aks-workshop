@@ -4,7 +4,9 @@ metadata:
   name: allow-aadpodidentity
   namespace: aadpodidentity
 spec:
-  podSelector: {}
+  podSelector:
+    matchLabels:
+      component: "mic"
   policyTypes:
   - Ingress
   - Egress
@@ -83,6 +85,11 @@ spec:
           cidr: 0.0.0.0/0
       ports:
       - port: 443
+    - to:
+      - ipBlock:
+          cidr: 100.64.1.0/24
+      ports:
+      - port: 2579
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -393,6 +400,11 @@ spec:
           cidr: 0.0.0.0/0
       ports:
       - port: 443
+    - to:
+      - ipBlock:
+          cidr: 100.64.1.0/24
+      ports:
+      - port: 2579
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
@@ -439,3 +451,8 @@ spec:
           cidr: 0.0.0.0/0
       ports:
       - port: 443
+    - to:
+      - ipBlock:
+          cidr: 100.64.1.0/24
+      ports:
+      - port: 2579
