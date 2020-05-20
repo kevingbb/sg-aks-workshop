@@ -176,8 +176,6 @@ spec:
       ports:
       - port: 443
         protocol: TCP
-      - port: 9418
-        protocol: TCP
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
