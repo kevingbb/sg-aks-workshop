@@ -195,6 +195,9 @@ spec:
       - namespaceSelector:
           matchLabels:
             linkerd.io/is-control-plane: "true"
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/cluster-service: "true"
   egress:
     - to:
       - podSelector: {}
@@ -339,6 +342,9 @@ spec:
       - namespaceSelector:
           matchLabels:
             linkerd.io/is-control-plane: "true"
+      - namespaceSelector:
+          matchLabels:
+            kubernetes.io/cluster-service: "true"
   egress:
     - to:
       - podSelector: {}
@@ -361,6 +367,9 @@ spec:
       - namespaceSelector:
           matchLabels:
             kubernetes.io/cluster-service: "true"
+    - to:
+      - ipBlock:
+          cidr: 100.64.1.0/24
     - to:
       - ipBlock:
           cidr: 0.0.0.0/0
