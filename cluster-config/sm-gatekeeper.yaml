@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: gatekeeper
+    prometheus: prom-prometheus-operator-prometheus
+    release: prometheus-operator
+  name: gatekeeper
+  namespace: monitoring
+spec:
+  endpoints:
+  - port: metrics
+    interval: 10s
+  namespaceSelector:
+    matchNames:
+    - gatekeeper-system
+  selector:
+    matchLabels:
+      control-plane: controller-manager

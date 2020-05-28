@@ -198,6 +198,9 @@ spec:
       - namespaceSelector:
           matchLabels:
             kubernetes.io/cluster-service: "true"
+      - namespaceSelector:
+          matchLabels:
+            app: "monitoring"
   egress:
     - to:
       - podSelector: {}
@@ -367,6 +370,10 @@ spec:
       - namespaceSelector:
           matchLabels:
             kubernetes.io/cluster-service: "true"
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            control-plane: controller-manager
     - to:
       - ipBlock:
           cidr: 100.64.1.0/24
