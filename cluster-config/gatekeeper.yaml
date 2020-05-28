@@ -280,7 +280,8 @@ metadata:
   namespace: gatekeeper-system
 spec:
   ports:
-  - port: 443
+  - name: webook-server
+    port: 443
     targetPort: webhook-server
     protocol: TCP
   - name: metrics
