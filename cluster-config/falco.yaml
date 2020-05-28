@@ -2184,7 +2184,6 @@ metadata:
 spec:
   selector:
     app: sysdig-falco
-  clusterIP: 
   ports:
   - protocol: TCP
     port: 8765
