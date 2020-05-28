@@ -11,9 +11,10 @@ spec:
   endpoints:
   - port: metrics
     interval: 10s
+    path: /metrics
   namespaceSelector:
     matchNames:
     - gatekeeper-system
   selector:
     matchLabels:
-      control-plane: controller-manager
+      gatekeeper.sh/system: "yes"
