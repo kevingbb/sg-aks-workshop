@@ -5,7 +5,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.29.5
+    chart: nginx-ingress-1.41.2
     heritage: Helm
     release: nginx-ingress
   name: nginx-ingress
@@ -17,7 +17,7 @@ kind: ServiceAccount
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.29.5
+    chart: nginx-ingress-1.41.2
     heritage: Helm
     release: nginx-ingress
   name: nginx-ingress-backend
@@ -29,7 +29,7 @@ kind: ClusterRole
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.29.5
+    chart: nginx-ingress-1.41.2
     heritage: Helm
     release: nginx-ingress
   name: nginx-ingress
@@ -90,7 +90,7 @@ kind: ClusterRoleBinding
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.29.5
+    chart: nginx-ingress-1.41.2
     heritage: Helm
     release: nginx-ingress
   name: nginx-ingress
@@ -109,7 +109,7 @@ kind: Role
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.29.5
+    chart: nginx-ingress-1.41.2
     heritage: Helm
     release: nginx-ingress
   name: nginx-ingress
@@ -194,7 +194,7 @@ kind: RoleBinding
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.29.5
+    chart: nginx-ingress-1.41.2
     heritage: Helm
     release: nginx-ingress
   name: nginx-ingress
@@ -218,7 +218,7 @@ metadata:
     service.beta.kubernetes.io/azure-load-balancer-internal-subnet: "akskhsvcsubnet"
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.29.5
+    chart: nginx-ingress-1.41.2
     component: "controller"
     heritage: Helm
     release: nginx-ingress
@@ -238,8 +238,8 @@ spec:
       targetPort: https
   selector:
     app: nginx-ingress
-    component: "controller"
     release: nginx-ingress
+    app.kubernetes.io/component: controller
   type: "LoadBalancer"
 ---
 # Source: nginx-ingress/templates/default-backend-service.yaml
@@ -248,7 +248,7 @@ kind: Service
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.29.5
+    chart: nginx-ingress-1.41.2
     component: "default-backend"
     heritage: Helm
     release: nginx-ingress
@@ -262,8 +262,8 @@ spec:
       targetPort: http
   selector:
     app: nginx-ingress
-    component: "default-backend"
     release: nginx-ingress
+    app.kubernetes.io/component: default-backend
   type: "ClusterIP"
 ---
 # Source: nginx-ingress/templates/controller-deployment.yaml
@@ -272,10 +272,10 @@ kind: Deployment
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.29.5
-    component: "controller"
+    chart: nginx-ingress-1.41.2
     heritage: Helm
     release: nginx-ingress
+    app.kubernetes.io/component: controller
   name: nginx-ingress-controller
   namespace: ingress
   annotations:
@@ -294,13 +294,14 @@ spec:
     metadata:
       labels:
         app: nginx-ingress
-        component: "controller"
         release: nginx-ingress
+        component: "controller"
+        app.kubernetes.io/component: controller
     spec:
       dnsPolicy: ClusterFirst
       containers:
         - name: nginx-ingress-controller
-          image: "quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.27.1"
+          image: "us.gcr.io/k8s-artifacts-prod/ingress-nginx/controller:v0.34.1"
           imagePullPolicy: "IfNotPresent"
           args:
             - /nginx-ingress-controller
@@ -371,10 +372,10 @@ kind: Deployment
 metadata:
   labels:
     app: nginx-ingress
-    chart: nginx-ingress-1.29.5
-    component: "default-backend"
+    chart: nginx-ingress-1.41.2
     heritage: Helm
     release: nginx-ingress
+    app.kubernetes.io/component: default-backend
   name: nginx-ingress-default-backend
   namespace: ingress
 spec:
@@ -388,8 +389,8 @@ spec:
     metadata:
       labels:
         app: nginx-ingress
-        component: "default-backend"
         release: nginx-ingress
+        app.kubernetes.io/component: default-backend
     spec:
       containers:
         - name: nginx-ingress-default-backend
