@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace Classifier.Web
 {
@@ -32,6 +33,7 @@ namespace Classifier.Web
             services.AddHealthChecks()
                 .AddCheck("self", () => running ? HealthCheckResult.Healthy() : HealthCheckResult.Unhealthy());
             services.AddApplicationInsightsTelemetry(Configuration["AppInsightsInstrumentationKey"]);
+            services.AddSingleton<ITelemetryInitializer, ImageClassifierTelemetryInitializer>();
             services.AddControllers();
             services.AddRazorPages();
             services.AddSignalR();

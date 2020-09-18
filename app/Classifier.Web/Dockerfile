@@ -19,6 +19,7 @@ COPY ./wwwroot/js/* ./wwwroot/js/
 COPY ./bundleconfig.json ./
 COPY ./Program.cs ./
 COPY ./Startup.cs ./
+COPY ./ImageClassifierTelemetryInitializer.cs ./
 RUN dotnet publish -c Release -r linux-musl-x64 -o out --self-contained true /p:PublishTrimmed=true
 
 # build runtime image

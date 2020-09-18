@@ -10,6 +10,7 @@ COPY ./ImageUtil.cs ./
 COPY ./Program.cs ./
 COPY ./Startup.cs ./
 COPY ./WorkerHostedService.cs ./
+COPY ./ImageClassifierTelemetryInitializer.cs ./
 RUN dotnet publish -c Release -r linux-x64 -o out --self-contained true /p:PublishTrimmed=true
 
 # build runtime image
