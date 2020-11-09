@@ -27,14 +27,14 @@ metadata:
   annotations:
     linkerd.io/inject: enabled
 ---
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: falco
-  labels:
-    app: falco
-  annotations:
-    linkerd.io/inject: enabled
+# apiVersion: v1
+# kind: Namespace
+# metadata:
+#   name: falco
+#   labels:
+#     app: falco
+#   annotations:
+#     linkerd.io/inject: enabled
 ---
 apiVersion: v1
 kind: Namespace
