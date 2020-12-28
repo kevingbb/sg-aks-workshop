@@ -45,7 +45,7 @@ spec:
       memory: 10Mi
     type: Container
   - max:
-      storage: 5Gi
+      storage: 8Gi
     min:
       storage: 1Gi
     type: PersistentVolumeClaim
