@@ -452,7 +452,7 @@ spec:
             linkerd.io/is-control-plane: "true"
       - namespaceSelector:
           matchLabels:
-            app: ingress
+            app: traefik
   egress:
     - to:
       - podSelector: {}

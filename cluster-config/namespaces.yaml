@@ -80,3 +80,12 @@ metadata:
     app: staging
   annotations:
     linkerd.io/inject: enabled
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik
+  labels:
+    app: traefik
+  annotations:
+    linkerd.io/inject: enabled
