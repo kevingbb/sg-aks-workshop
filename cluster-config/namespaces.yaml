@@ -5,7 +5,7 @@ metadata:
   labels:
     app: aadpodidentity
   annotations:
-    linkerd.io/inject: enabled
+    linkerd.io/inject: disabled
 ---
 apiVersion: v1
 kind: Namespace
@@ -27,14 +27,14 @@ metadata:
   annotations:
     linkerd.io/inject: enabled
 ---
-# apiVersion: v1
-# kind: Namespace
-# metadata:
-#   name: falco
-#   labels:
-#     app: falco
-#   annotations:
-#     linkerd.io/inject: enabled
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: falco
+  labels:
+    app: falco
+  annotations:
+    linkerd.io/inject: disabled
 ---
 apiVersion: v1
 kind: Namespace
@@ -61,7 +61,7 @@ metadata:
   labels:
     app: monitoring
   annotations:
-    linkerd.io/inject: enabled
+    linkerd.io/inject: disabled
 ---
 apiVersion: v1
 kind: Namespace
