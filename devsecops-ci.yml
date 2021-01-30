@@ -59,6 +59,7 @@ jobs:
     displayName: 'Run CredScan'
     inputs:
       toolMajorVersion: 'V2'
+      outputFormat: 'sarif'
       verboseOutput: true
       batchSize: '20'
 
