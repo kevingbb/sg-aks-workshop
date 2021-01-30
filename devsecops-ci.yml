@@ -16,7 +16,7 @@ variables:
   SonarCloudEndpoint: 'sonarcloud'
   SonarCloudOrganization: 'kevingbb'
   SonarCloudProjectKey: 'devsecops.kevingbb'
-  SonarCloudProjectName: 'Classifier.Web'
+  SonarCloudProjectName: 'imageclassifier.kevingbb'
   WebRepository: 'imageclassifierweb'
   WorkerRepository: 'imageclassifierworker'
 
@@ -150,6 +150,8 @@ jobs:
 
   - task: PublishBuildArtifacts@1
     displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
     condition: succeededOrFailed()
 
   - task: Docker@2
