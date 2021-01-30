@@ -16,7 +16,7 @@ variables:
   SonarCloudEndpoint: 'sonarcloud'
   SonarCloudOrganization: 'kevingbb'
   SonarCloudProjectKey: 'kevingbb'
-  SonarCloudProjectName: 'imageclassifier.kevingbb'
+  SonarCloudProjectName: 'devsecops.kevingbb'
   WebRepository: 'imageclassifierweb'
   WorkerRepository: 'imageclassifierworker'
 
