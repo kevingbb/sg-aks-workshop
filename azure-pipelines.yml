@@ -62,7 +62,7 @@ jobs:
   - task: aquasecScanner@4
     displayName: 'Scan Image Web'
     inputs:
-      image: '$(ACRLoginServer)/$(WebRepository):$(Build.BuildId),$(ACRLoginServer)/$(WorkerRepository):$(Build.BuildId)'
+      image: '$(ACRLoginServer)/$(WebRepository):$(Build.BuildId)'
       register: false
       scanType: 'local'
       scanner: 'registry.aquasec.com/scanner:5.3'
