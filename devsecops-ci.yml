@@ -15,8 +15,8 @@ variables:
   BuildConfiguration: 'Release'
   SonarCloudEndpoint: 'sonarcloud'
   SonarCloudOrganization: 'kevingbb'
-  SonarCloudProjectKey: 'kevingbb'
-  SonarCloudProjectName: 'devsecops.kevingbb'
+  SonarCloudProjectKey: 'devsecops.kevingbb'
+  SonarCloudProjectName: 'Classifier.Web'
   WebRepository: 'imageclassifierweb'
   WorkerRepository: 'imageclassifierworker'
 
@@ -35,7 +35,7 @@ jobs:
       organization: $(SonarCloudOrganization)
       projectKey: $(SonarCloudProjectKey)
       projectName: $(SonarCloudProjectName)
-    enabled: false
+    enabled: true
 
   - task: UseDotNet@2
     displayName: 'Use .NET Core sdk 3.1.x'
@@ -134,11 +134,11 @@ jobs:
 
   - task: SonarCloudAnalyze@1
     displayName: 'Run Code Analysis'
-    enabled: false
+    enabled: true
 
   - task: SonarCloudPublish@1
     displayName: 'Publish Quality Gate Result'
-    enabled: false
+    enabled: true
 
   - task: DotNetCoreCLI@2
     displayName: Publish
