@@ -69,6 +69,14 @@ jobs:
       connection: $(AquaManagementConsoleServiceConnection)
       caCertificates: true
 
+  - task: CmdLine@2
+    displayName: 'Check Scan Results Directory'
+    inputs:
+      script: |
+        ls -al
+        ls -al scan\ results/
+    enabled: true
+
   - task: aquasecScanner@4
     displayName: 'Scan Image Worker'
     inputs:
