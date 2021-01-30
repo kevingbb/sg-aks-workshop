@@ -9,7 +9,7 @@ trigger:
 variables:
   ACRConnectionName: 'akskhacr'
   ACRLoginServer: 'akskhacr.azurecr.io'
-  AquaImage: 'registry.aquasec.com/scanner:4.2'
+  AquaImage: 'registry.aquasec.com/scanner:5.3'
   AquaManagementConsoleServiceConnection: 'aquasec'
   AquaRegistryConnection: 'aquasecregistry'
   WebRepository: 'imageclassifierweb'
