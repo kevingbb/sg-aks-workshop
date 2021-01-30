@@ -42,7 +42,7 @@ jobs:
       repository: '$(WebRepository)'
       command: build
       Dockerfile: app/Classifier.Web/Dockerfile
-    enabled: false
+    enabled: true
 
   - task: Docker@2
     displayName: 'Build Worker'
@@ -51,7 +51,7 @@ jobs:
       repository: '$(WorkerRepository)'
       command: build
       Dockerfile: app/Classifier.Worker/Dockerfile
-    enabled: false
+    enabled: true
 
   - task: Docker@2
     displayName: 'Pull Aqua Scanner Image'
@@ -85,4 +85,4 @@ jobs:
         docker push $(ACRLoginServer)/$(WebRepository):latest
         docker tag $(ACRLoginServer)/$(WorkerRepository):$(Build.BuildId) $(ACRLoginServer)/$(WorkerRepository):latest
         docker push $(ACRLoginServer)/$(WorkerRepository):latest
-    enabled: false
+    enabled: true
