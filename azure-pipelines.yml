@@ -74,7 +74,7 @@ jobs:
     inputs:
       script: |
         ls -al
-        ls -al scan\ results/
+        ls -al $(build.artifactstagingdirectory)
     enabled: true
 
   - task: aquasecScanner@4
@@ -96,3 +96,9 @@ jobs:
         docker tag $(ACRLoginServer)/$(WorkerRepository):$(Build.BuildId) $(ACRLoginServer)/$(WorkerRepository):latest
         docker push $(ACRLoginServer)/$(WorkerRepository):latest
     enabled: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+    condition: succeededOrFailed()
