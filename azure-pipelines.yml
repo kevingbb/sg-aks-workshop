@@ -74,7 +74,10 @@ jobs:
     inputs:
       script: |
         ls -al
-        ls -al $(build.artifactstagingdirectory)
+        ls -al /
+        ls -al $(Build.ArtifactStagingDirectory)
+        ls -al $(Agent.BuildDirectory)
+        ls -al $(Build.BinariesDirectory)
     enabled: true
 
   - task: aquasecScanner@4
