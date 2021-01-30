@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.101-alpine3.10 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:3.1.405-alpine3.12 AS build-env
 # Setup libman and PATH
 RUN dotnet tool install -g Microsoft.Web.LibraryManager.Cli
 ENV PATH="$PATH:/root/.dotnet/tools"
@@ -23,7 +23,7 @@ COPY ./ImageClassifierTelemetryInitializer.cs ./
 RUN dotnet publish -c Release -r linux-musl-x64 -o out --self-contained true /p:PublishTrimmed=true
 
 # build runtime image
-FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.0.1-alpine3.10
+FROM mcr.microsoft.com/dotnet/runtime-deps:3.1.11-alpine3.12
 # Add non-root user
 RUN addgroup -g 99 appuser && adduser -S -u 99 appuser appuser
 WORKDIR /app

@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0.101-buster AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:3.1.405-buster AS build-env
 WORKDIR /app
 # copy csproj and restore as distinct layers
 COPY *.csproj ./
@@ -14,7 +14,7 @@ COPY ./ImageClassifierTelemetryInitializer.cs ./
 RUN dotnet publish -c Release -r linux-x64 -o out --self-contained true /p:PublishTrimmed=true
 
 # build runtime image
-FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.0.1-buster-slim
+FROM mcr.microsoft.com/dotnet/runtime-deps:3.1.11-buster-slim
 # Add non-root user
 RUN groupadd -g 99 appuser && useradd -r -u 99 -g appuser appuser
 WORKDIR /app
