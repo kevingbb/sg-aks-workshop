@@ -1,0 +1,154 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  webRepository: 'imageclassifierweb'
+
+steps:
+- task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
+  displayName: 'Prepare analysis on SonarCloud'
+  inputs:
+    SonarCloud: sonarcloud
+    organization: kevingbb
+    projectKey: kevingbb
+    projectName: imageclassifier.kevingbb
+  enabled: false
+
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk 3.1.11'
+  inputs:
+    version: 3.1.11
+
+- task: UsePythonVersion@0
+  displayName: 'Use Python 3.8'
+  inputs:
+    versionSpec: 3.8
+
+- script: |
+   pip install detect-secrets
+   detect-secrets scan --custom-plugins azure_storage_key.py
+  displayName: 'Detect Secrets'
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@2
+  displayName: 'Run CredScan'
+  inputs:
+    toolMajorVersion: V2
+    verboseOutput: true
+    batchSize: 20
+    debugMode: false
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-report.SdtReport@1
+  displayName: 'Create Security Analysis Report'
+  inputs:
+    CredScan: true
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-publishsecurityanalysislogs.PublishSecurityAnalysisLogs@2
+  displayName: 'Publish Security Analysis Logs'
+  inputs:
+    AllTools: false
+    AntiMalware: false
+    APIScan: false
+    BinSkim: false
+    CodesignValidation: false
+    FortifySCA: false
+    FxCop: false
+    ModernCop: false
+    MSRD: false
+    PoliCheck: false
+    RoslynAnalyzers: false
+    SDLNativeRules: false
+    Semmle: false
+    TSLint: false
+    WebScout: false
+
+- task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@1
+  displayName: 'Post Analysis'
+  inputs:
+    CredScan: true
+
+- script: 'dotnet --version'
+  displayName: 'Check .NET Version'
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: '**/*.csproj'
+    vstsFeed: 'cdfd7b87-2351-4561-821a-faf6fb3420c7'
+
+- bash: 'curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar'
+  displayName: 'Download Whitesource agent'
+  enabled: false
+
+- bash: |
+   java -jar wss-unified-agent.jar -c whitesource.config -apiKey $(whitesource_api_key)
+   exit $?
+  displayName: 'Run Whitesource'
+  enabled: false
+
+- task: whitesource.whiteSource-bolt-v2.bolt.wss.WhiteSource@20
+  displayName: WhiteSource
+  inputs:
+    projectName: '$(Build.BuildId)'
+  enabled: false
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    projects: '**/*.csproj'
+    arguments: '--configuration $(BuildConfiguration)'
+    vstsFeed: 'cdfd7b87-2351-4561-821a-faf6fb3420c7'
+
+- task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
+  displayName: 'Run Code Analysis'
+  enabled: false
+
+- task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
+  displayName: 'Publish Quality Gate Result'
+  enabled: false
+
+- task: DotNetCoreCLI@2
+  displayName: Publish
+  inputs:
+    command: publish
+    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+    vstsFeed: 'cdfd7b87-2351-4561-821a-faf6fb3420c7'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  condition: succeededOrFailed()
+
+- task: Docker@2
+  displayName: 'Build Web'
+  inputs:
+    containerRegistry: akskhacr
+    repository: '$(webRepository)'
+    command: build
+    Dockerfile: app/Classifier.Web/Dockerfile
+  enabled: false
+
+- task: Docker@2
+  displayName: 'Build Worker'
+  inputs:
+    containerRegistry: akskhacr
+    repository: '$(workerRepository)'
+    command: build
+    Dockerfile: app/Classifier.Worker/Dockerfile
+  enabled: false
+
+- bash: |
+   docker tag $(ACRLoginServer)/$(webRepository):$(Build.BuildId) $(ACRLoginServer)/$(webRepository):latest
+   docker push $(ACRLoginServer)/$(webRepository):latest
+   
+   docker tag $(ACRLoginServer)/$(workerRepository):$(Build.BuildId) $(ACRLoginServer)/$(workerRepository):latest
+   docker push $(ACRLoginServer)/$(workerRepository):latest
+  displayName: 'Tag and Push Image to ACR'
+  enabled: false
