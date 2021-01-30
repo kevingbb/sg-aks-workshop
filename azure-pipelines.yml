@@ -98,8 +98,13 @@ jobs:
       script: |
         ls -al
         ls -al /
+        ls -al /tmp
         ls -al $(Build.ArtifactStagingDirectory)
         ls -al $(Agent.BuildDirectory)
+        ls -al $(Agent.BuildDirectory)/a
+        ls -al $(Agent.BuildDirectory)/b
+        ls -al $(Agent.BuildDirectory)/s
+        ls -al $(Agent.BuildDirectory)/TestResults
         ls -al $(Build.BinariesDirectory)
     enabled: true
 
