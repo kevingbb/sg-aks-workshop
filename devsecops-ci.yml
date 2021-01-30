@@ -100,11 +100,11 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Restore
     inputs:
-      command: restore
+      command: 'restore'
       projects: '**/*.csproj'
       feedsToUse: 'select'
-      vstsFeed: 'f51968db-4678-4f1c-bd09-e59ab8cc5924/ff921681-517d-4e23-9cac-cf9714535c1b'
-      includeNuGetOrg: false
+      vstsFeed: 'cdfd7b87-2351-4561-821a-faf6fb3420c7'
+      includeNuGetOrg: true
 
   - task: CmdLine@2
     displayName: 'Download Whitesource agent'
