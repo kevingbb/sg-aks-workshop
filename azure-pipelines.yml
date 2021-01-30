@@ -64,7 +64,8 @@ jobs:
     inputs:
       image: '$(ACRLoginServer)/$(WebRepository):$(Build.BuildId)'
       register: false
-      scanType: local
+      scanType: 'local'
+      scanner: 'registry.aquasec.com/scanner:5.3'
       connection: $(AquaManagementConsoleServiceConnection)
       caCertificates: true
 
@@ -74,6 +75,7 @@ jobs:
       image: '$(ACRLoginServer)/$(WorkerRepository):$(Build.BuildId)'
       register: false
       scanType: local
+      scanner: 'registry.aquasec.com/scanner:5.3'
       connection: $(AquaManagementConsoleServiceConnection)
       caCertificates: true
 
