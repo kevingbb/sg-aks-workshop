@@ -68,6 +68,7 @@ jobs:
       scanner: 'registry.aquasec.com/scanner:5.3'
       connection: $(AquaManagementConsoleServiceConnection)
       caCertificates: false
+    enabled: false
 
   - task: CmdLine@2
     displayName: 'Check Scan Results Directory'
@@ -89,6 +90,7 @@ jobs:
       scanner: 'registry.aquasec.com/scanner:5.3'
       connection: $(AquaManagementConsoleServiceConnection)
       caCertificates: true
+    enabled: true
 
   - task: CmdLine@2
     displayName: 'Check Scan Results Directory 2'
