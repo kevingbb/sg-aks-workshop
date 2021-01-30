@@ -58,9 +58,9 @@ jobs:
   - task: CredScan@2
     displayName: 'Run CredScan'
     inputs:
-      toolMajorVersion: V2
+      toolMajorVersion: 'V2'
       verboseOutput: true
-      batchSize: 20
+      batchSize: '20'
 
   - task: SdtReport@1
     displayName: 'Create Security Analysis Report'
@@ -80,11 +80,20 @@ jobs:
       ArtifactType: 'Container'
       AllTools: false
       AntiMalware: false
+      APIScan: false
       BinSkim: false
+      CodesignValidation: false
       CredScan: true
+      FortifySCA: false
+      FxCop: false
+      ModernCop: false
       MSRD: false
+      PoliCheck: false
       RoslynAnalyzers: false
+      SDLNativeRules: false
+      Semmle: false
       TSLint: false
+      WebScout: false
       ToolLogsNotFoundAction: 'Standard'
 
   - task: PostAnalysis@1
