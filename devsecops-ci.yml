@@ -6,149 +6,175 @@
 trigger:
 - none
 
-pool:
-  vmImage: 'windows-latest'
-
 variables:
-  webRepository: 'imageclassifierweb'
+  ACRConnectionName: 'akskhacr'
+  ACRLoginServer: 'akskhacr.azurecr.io'
+  AquaImage: 'registry.aquasec.com/scanner:4.2'
+  AquaManagementConsoleServiceConnection: 'aqua-sec'
+  AquaServiceConnection: 'aquasec'
+  BuildConfiguration: 'Release'
+  SonarCloudEndpoint: 'sonarcloud'
+  SonarCloudOrganization: 'kevingbb'
+  SonarCloudProjectKey: 'kevingbb'
+  SonarCloudProjectName: 'imageclassifier.kevingbb'
+  WebRepository: 'imageclassifierweb'
+  WorkerRepository: 'imageclassifierworker'
 
-steps:
-- task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
-  displayName: 'Prepare analysis on SonarCloud'
-  inputs:
-    SonarCloud: sonarcloud
-    organization: kevingbb
-    projectKey: kevingbb
-    projectName: imageclassifier.kevingbb
-  enabled: false
+jobs:
+- job: JobOne
+  displayName: JobOne
 
-- task: UseDotNet@2
-  displayName: 'Use .NET Core sdk 3.1.11'
-  inputs:
-    version: 3.1.11
+  pool:
+    vmImage: 'windows-latest'
 
-- task: UsePythonVersion@0
-  displayName: 'Use Python 3.8'
-  inputs:
-    versionSpec: 3.8
+  steps:
+  - task: SonarCloudPrepare@1
+    displayName: 'Prepare analysis on SonarCloud'
+    inputs:
+      SonarCloud: $(SonarCloudEndpoint)
+      organization: $(SonarCloudOrganization)
+      projectKey: $(SonarCloudProjectKey)
+      projectName: $(SonarCloudProjectName)
+    enabled: false
 
-- script: |
-   pip install detect-secrets
-   detect-secrets scan --custom-plugins azure_storage_key.py
-  displayName: 'Detect Secrets'
+  - task: UseDotNet@2
+    displayName: 'Use .NET Core sdk 3.1.11'
+    inputs:
+      version: 3.1.11
 
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-credscan.CredScan@2
-  displayName: 'Run CredScan'
-  inputs:
-    toolMajorVersion: V2
-    verboseOutput: true
-    batchSize: 20
-    debugMode: false
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.8'
+    inputs:
+      versionSpec: 3.8
 
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-report.SdtReport@1
-  displayName: 'Create Security Analysis Report'
-  inputs:
-    CredScan: true
+  - task: CmdLine@2
+    displayName: 'Detect Secrets'
+    inputs:
+      script: |
+        pip install detect-secrets
+        detect-secrets scan --custom-plugins azure_storage_key.py
 
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-publishsecurityanalysislogs.PublishSecurityAnalysisLogs@2
-  displayName: 'Publish Security Analysis Logs'
-  inputs:
-    AllTools: false
-    AntiMalware: false
-    APIScan: false
-    BinSkim: false
-    CodesignValidation: false
-    FortifySCA: false
-    FxCop: false
-    ModernCop: false
-    MSRD: false
-    PoliCheck: false
-    RoslynAnalyzers: false
-    SDLNativeRules: false
-    Semmle: false
-    TSLint: false
-    WebScout: false
+  - task: CredScan@2
+    displayName: 'Run CredScan'
+    inputs:
+      toolMajorVersion: V2
+      verboseOutput: true
+      batchSize: 20
 
-- task: securedevelopmentteam.vss-secure-development-tools.build-task-postanalysis.PostAnalysis@1
-  displayName: 'Post Analysis'
-  inputs:
-    CredScan: true
+  - task: SdtReport@1
+    displayName: 'Create Security Analysis Report'
+    inputs:
+      AllTools: false
+      BinSkim: false
+      CredScan: true
+      MSRD: false
+      RoslynAnalyzers: false
+      TSLint: false
+      ToolLogsNotFoundAction: 'Standard'
 
-- script: 'dotnet --version'
-  displayName: 'Check .NET Version'
+  - task: PublishSecurityAnalysisLogs@2
+    displayName: 'Publish Security Analysis Logs'
+    inputs:
+      ArtifactName: 'CodeAnalysisLogs'
+      ArtifactType: 'Container'
+      AllTools: false
+      AntiMalware: false
+      BinSkim: false
+      CredScan: true
+      MSRD: false
+      RoslynAnalyzers: false
+      TSLint: false
+      ToolLogsNotFoundAction: 'Standard'
 
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: '**/*.csproj'
-    vstsFeed: 'cdfd7b87-2351-4561-821a-faf6fb3420c7'
+  - task: PostAnalysis@1
+    displayName: 'Post Analysis'
+    inputs:
+      AllTools: false
+      BinSkim: false
+      CredScan: true
+      RoslynAnalyzers: false
+      TSLint: false
+      ToolLogsNotFoundAction: 'Standard'
 
-- bash: 'curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar'
-  displayName: 'Download Whitesource agent'
-  enabled: false
+  - task: DotNetCoreCLI@2
+    displayName: Restore
+    inputs:
+      command: restore
+      projects: '**/*.csproj'
+      feedsToUse: 'select'
+      vstsFeed: 'f51968db-4678-4f1c-bd09-e59ab8cc5924/ff921681-517d-4e23-9cac-cf9714535c1b'
+      includeNuGetOrg: false
 
-- bash: |
-   java -jar wss-unified-agent.jar -c whitesource.config -apiKey $(whitesource_api_key)
-   exit $?
-  displayName: 'Run Whitesource'
-  enabled: false
+  - task: CmdLine@2
+    displayName: 'Download Whitesource agent'
+    inputs:
+      script: 'curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar'
+    enabled: false
 
-- task: whitesource.whiteSource-bolt-v2.bolt.wss.WhiteSource@20
-  displayName: WhiteSource
-  inputs:
-    projectName: '$(Build.BuildId)'
-  enabled: false
+  - task: CmdLine@2
+    displayName: 'Run Whitesource'
+    inputs:
+      script: |
+        java -jar wss-unified-agent.jar -c whitesource.config -apiKey $(whitesource_api_key)
+        exit $?
+    enabled: false
 
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    projects: '**/*.csproj'
-    arguments: '--configuration $(BuildConfiguration)'
-    vstsFeed: 'cdfd7b87-2351-4561-821a-faf6fb3420c7'
+  - task: WhiteSource@20
+    displayName: WhiteSource
+    inputs:
+      projectName: '$(Build.BuildId)'
+    enabled: false
 
-- task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
-  displayName: 'Run Code Analysis'
-  enabled: false
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      projects: '**/*.csproj'
+      arguments: '--configuration $(BuildConfiguration)'
 
-- task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
-  displayName: 'Publish Quality Gate Result'
-  enabled: false
+  - task: SonarCloudAnalyze@1
+    displayName: 'Run Code Analysis'
+    enabled: false
 
-- task: DotNetCoreCLI@2
-  displayName: Publish
-  inputs:
-    command: publish
-    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
-    vstsFeed: 'cdfd7b87-2351-4561-821a-faf6fb3420c7'
+  - task: SonarCloudPublish@1
+    displayName: 'Publish Quality Gate Result'
+    enabled: false
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  condition: succeededOrFailed()
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: True
+      arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+      zipAfterPublish: True
 
-- task: Docker@2
-  displayName: 'Build Web'
-  inputs:
-    containerRegistry: akskhacr
-    repository: '$(webRepository)'
-    command: build
-    Dockerfile: app/Classifier.Web/Dockerfile
-  enabled: false
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    condition: succeededOrFailed()
 
-- task: Docker@2
-  displayName: 'Build Worker'
-  inputs:
-    containerRegistry: akskhacr
-    repository: '$(workerRepository)'
-    command: build
-    Dockerfile: app/Classifier.Worker/Dockerfile
-  enabled: false
+  - task: Docker@2
+    displayName: 'Build Web'
+    inputs:
+      containerRegistry: $(ACRConnectionName)
+      repository: '$(WebRepository)'
+      command: build
+      Dockerfile: app/Classifier.Web/Dockerfile
+    enabled: false
 
-- bash: |
-   docker tag $(ACRLoginServer)/$(webRepository):$(Build.BuildId) $(ACRLoginServer)/$(webRepository):latest
-   docker push $(ACRLoginServer)/$(webRepository):latest
-   
-   docker tag $(ACRLoginServer)/$(workerRepository):$(Build.BuildId) $(ACRLoginServer)/$(workerRepository):latest
-   docker push $(ACRLoginServer)/$(workerRepository):latest
-  displayName: 'Tag and Push Image to ACR'
-  enabled: false
+  - task: Docker@2
+    displayName: 'Build Worker'
+    inputs:
+      containerRegistry: $(ACRConnectionName)
+      repository: '$(WorkerRepository)'
+      command: build
+      Dockerfile: app/Classifier.Worker/Dockerfile
+    enabled: false
+
+  - task: CmdLine@2
+    displayName: 'Tag and Push Image to ACR'
+    inputs:
+      script: |
+        docker tag $(ACRLoginServer)/$(WebRepository):$(Build.BuildId) $(ACRLoginServer)/$(WebRepository):latest
+        docker push $(ACRLoginServer)/$(WebRepository):latest
+        docker tag $(ACRLoginServer)/$(WorkerRepository):$(Build.BuildId) $(ACRLoginServer)/$(WorkerRepository):latest
+        docker push $(ACRLoginServer)/$(WorkerRepository):latest
+    enabled: false
