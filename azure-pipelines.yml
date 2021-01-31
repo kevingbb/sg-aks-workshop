@@ -45,6 +45,15 @@ jobs:
     enabled: true
 
   - task: Docker@2
+    displayName: 'Build Worker'
+    inputs:
+      containerRegistry: $(ACRConnectionName)
+      repository: '$(WorkerRepository)'
+      command: build
+      Dockerfile: app/Classifier.Worker/Dockerfile
+    enabled: false
+
+  - task: Docker@2
     displayName: 'Pull Aqua Scanner Image'
     inputs:
       command: pull
@@ -61,48 +70,6 @@ jobs:
       caCertificates: false
     enabled: true
 
-  - task: CmdLine@2
-    displayName: 'Tag and Push Image to ACR'
-    inputs:
-      script: |
-        docker tag $(ACRLoginServer)/$(WebRepository):$(Build.BuildId) $(ACRLoginServer)/$(WebRepository):latest
-        docker push $(ACRLoginServer)/$(WebRepository):latest
-    enabled: true
-
-- job: JobTwo
-  displayName: JobTwo
-
-  pool:
-    vmImage: 'ubuntu-latest'
-
-  steps:
-  - task: Docker@2
-    displayName: Aqua Registry Login
-    inputs:
-      containerRegistry: $(AquaRegistryConnection)
-      command: login
-
-  - task: Docker@2
-    displayName: ACR Registry Login
-    inputs:
-      containerRegistry: $(ACRConnectionName)
-      command: login
-
-  - task: Docker@2
-    displayName: 'Build Worker'
-    inputs:
-      containerRegistry: $(ACRConnectionName)
-      repository: '$(WorkerRepository)'
-      command: build
-      Dockerfile: app/Classifier.Worker/Dockerfile
-    enabled: true
-
-  - task: Docker@2
-    displayName: 'Pull Aqua Scanner Image'
-    inputs:
-      command: pull
-      arguments: $(AquaImage)
-
   - task: aquasecScanner@4
     displayName: 'Scan Image Worker'
     inputs:
@@ -112,12 +79,14 @@ jobs:
       scanner: 'registry.aquasec.com/scanner:5.3'
       connection: $(AquaManagementConsoleServiceConnection)
       caCertificates: true
-    enabled: true
+    enabled: false
 
   - task: CmdLine@2
     displayName: 'Tag and Push Image to ACR'
     inputs:
       script: |
-        docker tag $(ACRLoginServer)/$(WorkerRepository):$(Build.BuildId) $(ACRLoginServer)/$(WorkerRepository):latest
-        docker push $(ACRLoginServer)/$(WorkerRepository):latest
+        docker tag $(ACRLoginServer)/$(WebRepository):$(Build.BuildId) $(ACRLoginServer)/$(WebRepository):latest
+        docker push $(ACRLoginServer)/$(WebRepository):latest
+        # docker tag $(ACRLoginServer)/$(WorkerRepository):$(Build.BuildId) $(ACRLoginServer)/$(WorkerRepository):latest
+        # docker push $(ACRLoginServer)/$(WorkerRepository):latest
     enabled: true
