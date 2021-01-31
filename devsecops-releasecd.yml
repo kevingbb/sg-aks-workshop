@@ -1,0 +1,30 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+variables:
+  ACRConnectionName: 'akskhacr'
+  ACRLoginServer: 'akskhacr.azurecr.io'
+  WebRepository: 'imageclassifierweb'
+  WorkerRepository: 'imageclassifierworker'
+  AKSServiceConnection: 'akskh'
+
+jobs:
+- job: JobOne
+  displayName: JobOne
+
+  pool:
+    vmImage: 'ubuntu-latest'
+
+  steps:
+  - task: Kubernetes@0
+    displayName: 'Update Web Image'
+    inputs:
+      kubernetesServiceConnection: $(AKSServiceConnection)
+      namespace: dev
+      command: set
+      arguments: 'image deploy $(WebRepository) imageclassifierweb=$(ACRLoginServer)/$(WebRepository):$(Build.BuildId)'

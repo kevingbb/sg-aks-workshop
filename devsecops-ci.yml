@@ -19,6 +19,7 @@ variables:
   AquaRegistryConnection: 'aquasecregistry'
   WebRepository: 'imageclassifierweb'
   WorkerRepository: 'imageclassifierworker'
+  AKSServiceConnection: 'akskh'
 
 stages:
 - stage: SecurityCheck
@@ -250,3 +251,23 @@ stages:
           # docker tag $(ACRLoginServer)/$(WorkerRepository):$(Build.BuildId) $(ACRLoginServer)/$(WorkerRepository):latest
           # docker push $(ACRLoginServer)/$(WorkerRepository):latest
       enabled: true
+
+# - stage: Release
+#   dependsOn: ContainerBuild
+#   variables: 
+#     Environment: Dev
+#   jobs:
+#   - job: JobRelease
+#     displayName: JobRelease
+
+#     pool:
+#       vmImage: 'ubuntu-latest'
+
+#     steps:
+#     - task: Kubernetes@0
+#       displayName: 'Update Web Image'
+#       inputs:
+#         kubernetesServiceConnection: $(AKSServiceConnection)
+#         namespace: dev
+#         command: set
+#         arguments: 'image deploy $(WebRepository) imageclassifierweb=$(ACRLoginServer)/$(WebRepository):$(Build.BuildId)'

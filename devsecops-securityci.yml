@@ -1,0 +1,160 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- none
+
+variables:
+  BuildConfiguration: 'Release'
+  SonarCloudEndpoint: 'sonarcloud'
+  SonarCloudOrganization: 'kevingbb'
+  SonarCloudProjectKey: 'devsecops.kevingbb'
+  SonarCloudProjectName: 'imageclassifier.kevingbb'
+  ACRConnectionName: 'akskhacr'
+  ACRLoginServer: 'akskhacr.azurecr.io'
+
+jobs:
+- job: JobSecurityCheck
+  displayName: JobSecurityCheck
+
+  pool:
+    vmImage: 'windows-latest'
+
+  steps:
+  - task: SonarCloudPrepare@1
+    displayName: 'Prepare analysis on SonarCloud'
+    inputs:
+      SonarCloud: $(SonarCloudEndpoint)
+      organization: $(SonarCloudOrganization)
+      projectKey: $(SonarCloudProjectKey)
+      projectName: $(SonarCloudProjectName)
+    enabled: true
+
+  - task: UseDotNet@2
+    displayName: 'Use .NET Core sdk 3.1.x'
+    inputs:
+      packageType: 'sdk'
+      version: '3.1.x'
+
+  - task: UsePythonVersion@0
+    displayName: 'Use Python 3.8'
+    inputs:
+      versionSpec: 3.8
+
+  - task: CmdLine@2
+    displayName: 'Detect Secrets'
+    inputs:
+      script: |
+        pip install detect-secrets
+        detect-secrets scan --custom-plugins azure_storage_key.py
+
+  - task: CredScan@2
+    displayName: 'Run CredScan'
+    inputs:
+      toolMajorVersion: 'V2'
+      outputFormat: 'sarif'
+      verboseOutput: true
+      batchSize: '20'
+
+  - task: SdtReport@1
+    displayName: 'Create Security Analysis Report'
+    inputs:
+      AllTools: false
+      BinSkim: false
+      CredScan: true
+      MSRD: false
+      RoslynAnalyzers: false
+      TSLint: false
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PublishSecurityAnalysisLogs@2
+    displayName: 'Publish Security Analysis Logs'
+    inputs:
+      ArtifactName: 'CodeAnalysisLogs'
+      ArtifactType: 'Container'
+      AllTools: false
+      AntiMalware: false
+      APIScan: false
+      BinSkim: false
+      CodesignValidation: false
+      CredScan: true
+      FortifySCA: false
+      FxCop: false
+      ModernCop: false
+      MSRD: false
+      PoliCheck: false
+      RoslynAnalyzers: false
+      SDLNativeRules: false
+      Semmle: false
+      TSLint: false
+      WebScout: false
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: PostAnalysis@1
+    displayName: 'Post Analysis'
+    inputs:
+      AllTools: false
+      BinSkim: false
+      CredScan: true
+      RoslynAnalyzers: false
+      TSLint: false
+      ToolLogsNotFoundAction: 'Standard'
+
+  - task: DotNetCoreCLI@2
+    displayName: Restore
+    inputs:
+      command: 'restore'
+      projects: '**/*.csproj'
+      feedsToUse: 'select'
+      vstsFeed: 'cdfd7b87-2351-4561-821a-faf6fb3420c7'
+      includeNuGetOrg: true
+
+  - task: CmdLine@2
+    displayName: 'Download Whitesource agent'
+    inputs:
+      script: 'curl -LJO https://unified-agent.s3.amazonaws.com/wss-unified-agent.jar'
+    enabled: false
+
+  - task: CmdLine@2
+    displayName: 'Run Whitesource'
+    inputs:
+      script: |
+        java -jar wss-unified-agent.jar -c whitesource.config -apiKey $(whitesource_api_key)
+        exit $?
+    enabled: false
+
+  - task: WhiteSource@20
+    displayName: 'Run WhiteSource Bolt'
+    inputs:
+      projectName: '$(Build.BuildId)'
+    enabled: false
+
+  - task: DotNetCoreCLI@2
+    displayName: Build
+    inputs:
+      projects: '**/*.csproj'
+      arguments: '--configuration $(BuildConfiguration)'
+
+  - task: SonarCloudAnalyze@1
+    displayName: 'Run Code Analysis'
+    enabled: true
+
+  - task: SonarCloudPublish@1
+    displayName: 'Publish Quality Gate Result'
+    enabled: true
+
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: True
+      arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+      zipAfterPublish: True
+
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+    condition: succeededOrFailed()
