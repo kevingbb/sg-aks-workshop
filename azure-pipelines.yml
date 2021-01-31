@@ -85,8 +85,10 @@ jobs:
     displayName: 'Tag and Push Image to ACR'
     inputs:
       script: |
-        docker tag $(ACRLoginServer)/$(WebRepository):$(Build.BuildId) $(ACRLoginServer)/$(WebRepository):latest
-        docker push $(ACRLoginServer)/$(WebRepository):latest
+        docker push $(ACRLoginServer)/$(WebRepository):$(Build.BuildId)
+        # docker tag $(ACRLoginServer)/$(WebRepository):$(Build.BuildId) $(ACRLoginServer)/$(WebRepository):latest
+        # docker push $(ACRLoginServer)/$(WebRepository):latest
+        # docker push $(ACRLoginServer)/$(WorkerRepository):$(Build.BuildId)
         # docker tag $(ACRLoginServer)/$(WorkerRepository):$(Build.BuildId) $(ACRLoginServer)/$(WorkerRepository):latest
         # docker push $(ACRLoginServer)/$(WorkerRepository):latest
     enabled: true
