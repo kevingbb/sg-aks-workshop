@@ -124,7 +124,7 @@ jobs:
     enabled: false
 
   - task: WhiteSource@20
-    displayName: WhiteSource
+    displayName: 'Run WhiteSource Bolt'
     inputs:
       projectName: '$(Build.BuildId)'
     enabled: false
