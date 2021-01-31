@@ -27,6 +27,12 @@
           <span class="navbar-brand" href="#">AKV Secret: @Model.Message </span>
           <span class="navbar-brand" href="#">{{ processingRate }} images/sec ({{ numberOfWorkers }} workers)</span>
         </div>
+        <div id="hidden" style="display: none;">
+          <p>
+              <!--[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Demo password")]-->
+              Password: <strong>Pass@word1</strong>
+          </p>
+        </div>
       </nav>
 
       <main role="main" class="container">
