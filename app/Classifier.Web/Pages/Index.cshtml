@@ -27,17 +27,15 @@
           <span class="navbar-brand" href="#">AKV Secret: @Model.Message </span>
           <span class="navbar-brand" href="#">{{ processingRate }} images/sec ({{ numberOfWorkers }} workers)</span>
         </div>
-        <div id="hidden" style="visibility: hidden">
-          <p>
-            <!--[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Demo password")]-->
-            Password: <strong>Pass@word1</strong>
-          </p>
-        </div>
       </nav>
 
       <main role="main" class="container">
         <transition-group name="slide-fade" tag="div">
           <div class="jumbotron" v-for="result in results" v-bind:key="result.id">
+            <p>
+              <!--[SuppressMessage("Microsoft.Security", "CS002:SecretInNextLine", Justification="Demo password")]-->
+              Password: <strong>Pass@word1</strong>
+            </p>
             <!-- <h1>Navbar example</h1>
             <p class="lead">This example is a quick exercise to illustrate how fixed to top navbar works. As you scroll, it will remain fixed to the top of your browser's viewport.</p>
             <a class="btn btn-lg btn-primary" href="../../components/navbar/" role="button">View navbar docs &raquo;</a> -->
