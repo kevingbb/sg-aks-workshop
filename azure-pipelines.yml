@@ -58,6 +58,7 @@ jobs:
     inputs:
       command: pull
       arguments: $(AquaImage)
+    enabled: false
 
   - task: aquasecScanner@4
     displayName: 'Scan Image Web'
@@ -65,7 +66,7 @@ jobs:
       image: '$(ACRLoginServer)/$(WebRepository):$(Build.BuildId)'
       register: false
       scanType: 'local'
-      scanner: 'registry.aquasec.com/scanner:5.3'
+      scanner: $(AquaImage)
       connection: $(AquaManagementConsoleServiceConnection)
       caCertificates: false
     enabled: true
