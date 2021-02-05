@@ -23,7 +23,7 @@ COPY ./ImageClassifierTelemetryInitializer.cs ./
 RUN dotnet publish -c Release -r linux-musl-x64 -o out --self-contained true /p:PublishTrimmed=true
 
 # build runtime image
-FROM mcr.microsoft.com/dotnet/runtime-deps:3.1.11-alpine3.12
+FROM akskhacr.azurecr.io/mcr.microsoft.com/dotnet/runtime-deps:3.1.11-alpine3.12
 # Add non-root user
 RUN addgroup -g 99 appuser && adduser -S -u 99 appuser appuser
 WORKDIR /app
