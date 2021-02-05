@@ -1,2 +1,2 @@
 # Base Image
-FROM mcr.microsoft.com/dotnet/core/runtime-deps:3.0.1-alpine3.10
+FROM mcr.microsoft.com/dotnet/runtime-deps:3.1.11-alpine3.12
